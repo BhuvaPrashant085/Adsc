@@ -15,6 +15,24 @@ def home(request):
     issues = Issue.objects.all().order_by('-created_at')
     return render(request, 'home.html', {'issues': issues})
 
+@login_required(login_url='login')
+def filter_search(request):
+    issues = Issue.objects.all().order_by('-created_at')
+    status_filter = request.GET.get('status')
+    priority_filter = request.GET.get('priority')
+    search = request.GET.get('search')
+
+    if status_filter and status_filter != 'All':
+        issues = issues.filter(status=status_filter)
+    if priority_filter and priority_filter != 'All':
+        issues = issues.filter(priority=priority_filter)
+    if search:
+        issues = issues.filter(title__icontains=search)
+
+    return render(request, 'filter_search.html', {'issues': issues})
+
+
+
 
 @login_required(login_url='login')
 def dashboard(request):
@@ -45,6 +63,23 @@ def dashboard(request):
     }
 
     return render(request, 'dashboard.html', context)
+
+@login_required(login_url='login')
+def create_issue(request):
+    if request.method == 'POST':
+        form = IssueForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = IssueForm()
+    return render(request, 'create_issue.html', {'form': form})
+
+
+@login_required(login_url='login')
+def history(request):
+    issues = Issue.objects.all().order_by('-created_at')
+    return render(request, 'history.html', {'issues': issues})
 
 
 def user_login(request):
@@ -90,17 +125,5 @@ def user_logout(request):
     return redirect('login')
 
 
-
-@login_required(login_url='login')
-def create_issue(request):
-    if request.method == 'POST':
-        form = IssueForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = IssueForm()
-
-    return render(request, 'issues/create.html', {'form': form})
 
 

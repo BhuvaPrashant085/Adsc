@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Issue - Bug Tracker</title>
+    <style>body { font-family: Arial; margin: 0; padding: 20px; background: #f4f6f7; }
+        nav { background:#34495e; color:white; padding:10px 20px; }
+        nav a { color:white; text-decoration:none; margin-left:15px; }
+        .nav-right { float:right; }
+        form { background:white; padding:20px; border-radius:5px; max-width:500px; margin-top:20px; }
+        form button { background:#3498db; color:white; padding:10px 15px; border:none; border-radius:5px; cursor:pointer; }
+        </style>
+</head>
+<body>
+
+<nav>
+    Bug Tracker Dashboard
+    <span class="nav-right">
+        Welcome, {{ request.user.username }} |
+        <a href="{% url 'dashboard' %}">Dashboard</a> |
+        <a href="{% url 'logout' %}">Logout</a>
+    </span>
+</nav>
+
+<h2>Create New Issue</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Issue</button>
+</form>
+
+</body>
+</html>

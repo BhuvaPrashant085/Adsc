@@ -1,0 +1,17 @@
+{% load static %}
+<h2>All Issues History</h2>
+<table>
+<tr>
+<th>ID</th><th>Title</th><th>Status</th><th>Priority</th><th>Created</th>
+</tr>
+{% for issue in issues %}
+<tr>
+<td>{{ issue.id }}</td>
+<td>{{ issue.title }}</td>
+<td>{{ issue.status }}</td>
+<td>{{ issue.priority }}</td>
+<td>{{ issue.created_at|date:"d M Y" }}</td>
+</tr>
+{% endfor %}
+</table>
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>

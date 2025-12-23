@@ -1,83 +1,58 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Dashboard - Bug Tracker</title>
     <style>
-        body {
-            font-family: Arial;
-            margin: 20px;
-        }
-        .card {
-            display: inline-block;
-            padding: 15px;
-            margin: 10px;
-            border-radius: 5px;
-            color: white;
-        }
-        .total { background-color: #34495e; }
-        .open { background-color: #3498db; }
-        .progress { background-color: #f39c12; }
-        .closed { background-color: #2ecc71; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ccc;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-        .high { color: red; font-weight: bold; }
-        .medium { color: orange; font-weight: bold; }
-        .low { color: green; font-weight: bold; }
+        body { font-family: Arial; margin: 0; padding: 0 20px; background: #f4f6f7; }
+        nav { background:#34495e; color:white; padding:10px 20px; }
+        nav a { color:white; text-decoration:none; margin-left:15px; }
+        .nav-right { float:right; }
+        .cards { display:flex; justify-content:space-around; margin:20px 0; }
+        .card { padding:15px; border-radius:5px; color:white; width:22%; text-align:center; }
+        .total { background-color:#34495e; }
+        .open { background-color:#3498db; }
+        .progress { background-color:#f39c12; }
+        .closed { background-color:#2ecc71; }
+        .create-btn { background:#3498db; color:white; padding:10px 15px; border-radius:5px; text-decoration:none; margin-top:20px; display:inline-block; }
+        table { width:100%; border-collapse:collapse; margin-top:20px; background:white; }
+        th, td { border:1px solid #ccc; padding:10px; text-align:center; }
+        th { background:#bdc3c7; }
+        .high { color:red; font-weight:bold; }
+        .medium { color:orange; font-weight:bold; }
+        .low { color:green; font-weight:bold; }
     </style>
 </head>
-
 <body>
 
-<h2>Bug Tracker Dashboard</h2>
+<!-- Navigation -->
+<nav>
+    Bug Tracker Dashboard
+    <span class="nav-right">
+        Welcome, {{ request.user.username }} |
+        <a href="{% url 'dashboard' %}">Dashboard</a> |
+        <a href="{% url 'create_issue' %}">Create Issue</a> |
+        <a href="{% url 'history' %}">History</a> |
+        <a href="{% url 'filter_search' %}">Filter / Search</a> |
+        <a href="{% url 'logout' %}">Logout</a>
+    </span>
+</nav>
 
-<p>Welcome, {{ request.user.username }} |
-<a href="{% url 'logout' %}">Logout</a></p>
+<h2>Dashboard</h2>
+<p>Welcome to your Bug Tracker Dashboard. Use the navigation above to access all features.</p>
 
-<!-- Summary Cards -->
-<div class="card total">Total Issues: {{ total_issues }}</div>
-<div class="card open">Open: {{ open_issues }}</div>
-<div class="card progress">In Progress: {{ in_progress_issues }}</div>
-<div class="card closed">Closed: {{ closed_issues }}</div>
+<div class="cards">
+    <div class="card total">Total Issues<br>{{ total_issues }}</div>
+    <div class="card open">Open<br>{{ open_issues }}</div>
+    <div class="card progress">In Progress<br>{{ in_progress_issues }}</div>
+    <div class="card closed">Closed<br>{{ closed_issues }}</div>
+</div>
 
-<!-- Filters -->
-<form method="get">
-    Status:
-    <select name="status">
-        <option>All</option>
-        <option>Open</option>
-        <option>In Progress</option>
-        <option>Closed</option>
-    </select>
-
-    Priority:
-    <select name="priority">
-        <option>All</option>
-        <option>Low</option>
-        <option>Medium</option>
-        <option>High</option>
-    </select>
-
-    <button type="submit">Filter</button>
-    <a href="{% url 'dashboard' %}">Reset</a>
-</form>
-
-<!-- Create Issue -->
 <p>
-    <a href="{% url 'create_issue' %}">+ Create New Issue</a>
+    <a href="{% url 'create_issue' %}" class="create-btn">+ Create New Issue</a>
 </p>
 
-<!-- Issues Table -->
+<h3>Recent Issues</h3>
 <table>
     <tr>
         <th>ID</th>
@@ -86,8 +61,7 @@
         <th>Priority</th>
         <th>Created</th>
     </tr>
-
-    {% for issue in issues %}
+    {% for issue in issues|slice:":5" %}
     <tr>
         <td>{{ issue.id }}</td>
         <td>{{ issue.title }}</td>

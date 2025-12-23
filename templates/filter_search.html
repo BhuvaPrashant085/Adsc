@@ -1,0 +1,38 @@
+{% load static %}
+<h2>Filter & Search Issues</h2>
+<form method="get">
+Status:
+<select name="status">
+<option>All</option>
+<option>Open</option>
+<option>In Progress</option>
+<option>Closed</option>
+</select>
+Priority:
+<select name="priority">
+<option>All</option>
+<option>Low</option>
+<option>Medium</option>
+<option>High</option>
+</select>
+<input type="text" name="search" placeholder="Search by title">
+<button type="submit">Apply</button>
+</form>
+
+<table>
+<tr>
+<th>ID</th><th>Title</th><th>Status</th><th>Priority</th><th>Created</th>
+</tr>
+{% for issue in issues %}
+<tr>
+<td>{{ issue.id }}</td>
+<td>{{ issue.title }}</td>
+<td>{{ issue.status }}</td>
+<td>{{ issue.priority }}</td>
+<td>{{ issue.created_at|date:"d M Y" }}</td>
+</tr>
+{% empty %}
+<tr><td colspan="5">No issues found</td></tr>
+{% endfor %}
+</table>
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>
