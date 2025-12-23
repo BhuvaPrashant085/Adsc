@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Bug Tracker</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+        .card {
+            display: inline-block;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+            color: white;
+        }
+        .total { background-color: #34495e; }
+        .open { background-color: #3498db; }
+        .progress { background-color: #f39c12; }
+        .closed { background-color: #2ecc71; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        .high { color: red; font-weight: bold; }
+        .medium { color: orange; font-weight: bold; }
+        .low { color: green; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+
+<h2>Bug Tracker Dashboard</h2>
+
+<p>Welcome, {{ request.user.username }} |
+<a href="{% url 'logout' %}">Logout</a></p>
+
+<!-- Summary Cards -->
+<div class="card total">Total Issues: {{ total_issues }}</div>
+<div class="card open">Open: {{ open_issues }}</div>
+<div class="card progress">In Progress: {{ in_progress_issues }}</div>
+<div class="card closed">Closed: {{ closed_issues }}</div>
+
+<!-- Filters -->
+<form method="get">
+    Status:
+    <select name="status">
+        <option>All</option>
+        <option>Open</option>
+        <option>In Progress</option>
+        <option>Closed</option>
+    </select>
+
+    Priority:
+    <select name="priority">
+        <option>All</option>
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+    </select>
+
+    <button type="submit">Filter</button>
+    <a href="{% url 'dashboard' %}">Reset</a>
+</form>
+
+<!-- Create Issue -->
+<p>
+    <a href="{% url 'create_issue' %}">+ Create New Issue</a>
+</p>
+
+<!-- Issues Table -->
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Priority</th>
+        <th>Created</th>
+    </tr>
+
+    {% for issue in issues %}
+    <tr>
+        <td>{{ issue.id }}</td>
+        <td>{{ issue.title }}</td>
+        <td>{{ issue.status }}</td>
+        <td class="{% if issue.priority == 'High' %}high{% elif issue.priority == 'Medium' %}medium{% else %}low{% endif %}">
+            {{ issue.priority }}
+        </td>
+        <td>{{ issue.created_at|date:"d M Y" }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">No issues found</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
